@@ -1,0 +1,50 @@
+# rob-risk-class-checker — 完整文本
+
+本文件为 llms.txt 标准的「完整版」，供长上下文模型一次性读取本仓的完整说明。
+
+## 这是什么
+
+`rob-risk-class-checker` 是 SynomosAI 平台的一个行业接入域声明仓（domain id `rob`，profile `domain/1.0`，当前状态 `RESERVED`，占位时间 2026-09-12）。它把「这台机器人风险几级、防护措施到不到位」拆成可核验的属性，让 AI 只做提示，不下运行结论。
+
+一句话：机器人风险等级 / 安全防护 / 急停功能的出处链核验，checker 只出示、不下运行结论，也不代定级。
+
+## 解决什么问题
+
+1. 机器人风险评估、防护装置、急停直接关系人身安全，协作场景尤甚。
+2. AI 容易越权替人下「可投入运行」结论或建议旁路安全功能——本仓用红线 + gate-map 把这种输出挡掉。
+3. 风险等级须由具备资质人员完成评估并留档，不能 AI 代定级。
+
+## 属性（5 个）
+
+- `rob.risk_class`：low/medium/high/very_high/undetermined
+- `rob.safeguard_measure`：fixed_guard/interlocked_guard/speed_and_separation/power_and_force_limiting/none
+- `rob.emergency_stop_status`：functional/untested/faulty/unknown
+- `rob.collaborative_operation`（boolean）：是否存在人机协同
+- `rob.human_oversight`：none/monitored/supervised/human_decides
+
+## 红线（3 条，机器可读，gate-map 各有阻断规则）
+
+1. 风险等级须由具备资质人员完成风险评估并留档，AI 不得代为定级。
+2. 不得在未确认安全防护措施有效时输出可投入运行的表述。
+3. 不得建议解除、旁路或弱化安全功能（含急停、联锁、限速）。
+
+## 快速开始
+
+```bash
+git clone https://github.com/SynomosAI/rob-risk-class-checker.git
+cd rob-risk-class-checker
+python -m json.tool domain.manifest.json > /dev/null   # 校验 JSON 合法
+```
+
+## 触发词
+
+工业机器人风险等级 / 安全防护装置 / 急停功能测试 / 人机协同作业 / 人工监督强度 / 这台机器人能开了吗（注：本域不下运行结论，只出示出处链）。
+
+## 许可与权利
+
+代码与配置按 MIT 许可使用（见根目录 LICENSE，© 2026 SynomosAI）。文档知识版权归 SynomosAI 所有。checker 输出仅出示与核验属性的出处链，不构成对主体风险或设备可运行性的专业结论；风险评估与运行权归本域资质人员、监管方与运营方本人。
+
+## 链接
+
+- 仓库: https://github.com/SynomosAI/rob-risk-class-checker
+- 四件套: domain.manifest.json / gate-map.json / privacy.json / checker.io.json
